@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "express": "3.x",
-    "serialport":  "1.x"
+    "serialport":  "1.x",
+    "node-sphero": "0.0.6"
   }
 }
