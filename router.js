@@ -1,7 +1,8 @@
 'use strict';
-var rccar = require('./rccar');
-var pi = require('./pi');
-var sphero = require('./sphero');
+//var rccar = require('./rccar/rccar');
+var pi = require('./pi/pi');
+var sphero = require('./sphero/sphero');
+exports.sphero = sphero;
 
 exports.rootHandler = function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -17,5 +18,5 @@ exports.piHandler = function(req, res) {
 };
 
 exports.spheroHandler = function(req, res) {
-	sphero.handle(req, res);
+  sphero.action(req, res);
 };
