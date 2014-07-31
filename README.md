@@ -19,3 +19,5 @@ All data you want to store on file about the teams or devices, use the specified
 
 User Interactions:
 ===================
+
+![alt text](http://i.imgur.com/CpXXlxq.png "Logo Title Text 1")
