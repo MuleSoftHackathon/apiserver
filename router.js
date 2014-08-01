@@ -1,5 +1,5 @@
 'use strict';
-//var rccar = require('./rccar/rccar');
+var rccar = require('./rccar/rccar');
 var pi = require('./pi/pi');
 var sphero = require('./sphero/sphero');
 exports.sphero = sphero;
