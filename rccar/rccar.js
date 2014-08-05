@@ -5,7 +5,6 @@ exports.handle = function (req, res) {
 
   var controller = carController[action];
   var port = getSerialPort(id);
-
   if (controller == null) {
     var ret = {};
     ret.status = FAILURE;
@@ -14,7 +13,7 @@ exports.handle = function (req, res) {
   } else if (port == null) {
     var ret = {};
     ret.status = FAILURE;
-    ret.message = 'no such port';
+    ret.message = 'no port found';
     res.json(ret);
   } else {
     controller(port, res);
@@ -26,22 +25,20 @@ var FAILURE = 'failure';
 
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
-var serialPort = (function() {
-    var port = null;
-    //'/dev/tty.HC-06-DevB'
-    port = new SerialPort('/dev/tty.usbmodem1421', {
-      baudrate: 9600,
-      parser: serialport.parsers.readline('\n')
-    }, false, function(error) {
-      if (error) {
-        console.log('port not open unsuccessful!');
-      }
-    }); 
-    return port;
-  })();
+var serialPort = init();
 
 function getSerialPort(id){
     return serialPort;
+}
+
+function init() {
+  //'/dev/tty.HC-06-DevB'
+  //'/dev/tty.usbmodem1421'
+  var port = new SerialPort('/dev/tty.HC-06-DevB', {
+    baudrate: 9600,
+    parser: serialport.parsers.readline('\n')
+  }, false); 
+  return port;
 }
 
 var carController = {
@@ -50,6 +47,7 @@ var carController = {
       var ret = {};
       if (error) {
         ret.status = FAILURE;
+        console.log(error);
       } else {
         ret.status = SUCCESS;
         ret.message = 'port opened';
@@ -65,6 +63,7 @@ var carController = {
       var ret = {};
       if (error) {
         ret.status = FAILURE;
+        console.log(error);
       } else {
         ret.status = SUCCESS;
         ret.message = 'port closed';
@@ -80,9 +79,23 @@ var carController = {
   },
   stop: function(port, res){
     _do(port, 'S', res, 'stop');  
+  },
+  left: function(port, res){
+    _do(port, 'L', res, 'left');  
+  },
+  right: function(port, res){
+    _do(port, 'R', res, 'right');  
+  },
+  high: function(port, res){
+    _do(port, 'h', res, 'high speed');  
+  },
+  medium: function(port, res){
+    _do(port, 'm', res, 'medium speed');  
+  },
+  low: function(port, res){
+    _do(port, 'l', res, 'low speed');  
   }
 };
-
 
 function _do(port, command, res, message) {
   port.write(command, function(error) {
@@ -90,6 +103,7 @@ function _do(port, command, res, message) {
     ret.command = command;
     if(error) {
       ret.status = FAILURE;
+      console.log(error);
     } else {
       ret.status = SUCCESS;
       ret.message = message;
