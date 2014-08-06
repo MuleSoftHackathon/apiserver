@@ -55,6 +55,7 @@ function _redirectBluetooth(req, res) {
 	var id = req.params.id;
 	var team = deviceIds[id];
 	var host = bluetoothServers[team];
+
 	if( !host ) {
 		res.json({message: 'team server not registered!'});
 	} else if ( callback ) {
@@ -69,26 +70,26 @@ function _redirectBluetooth(req, res) {
                 method: 'GET'
             },
             data = '',
-            requestTodevice = http.request(options, function (responseFromdevice) {
+            requestToDevice = http.request(options, function (responseFromDevice) {
 
-                responseFromdevice.setEncoding('utf8');
+                responseFromDevice.setEncoding('utf8');
 
-                responseFromdevice.on('data', function (chunk) {
+                responseFromDevice.on('data', function (chunk) {
                     data += chunk;
                 });
 
-                responseFromdevice.on('end', function () {
+                responseFromDevice.on('end', function () {
 
-                    res.status(responseFromdevice.statusCode).send(data);
+                    res.status(responseFromDevice.statusCode).send(data);
                 });
             });
 
-        requestTodevice.on('error', function (e) {
+        requestToDevice.on('error', function (e) {
             res.status(404).end();
             console.log('problem with request: ' + e.message);
         });
 
-        requestTodevice.end();
+        requestToDevice.end();
 	}
 }
 
