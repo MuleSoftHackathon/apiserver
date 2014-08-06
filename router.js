@@ -19,7 +19,7 @@ exports.register = function(req, res) {
 	var key = req.query.key;
 	var host = req.host;
 	var team = accessKeys[key];
-	if (team == null) {
+	if ( !team ) {
 		res.json({message: 'invalid key!'});
 	} else {
 		bluetoothServers[team] = host;
@@ -34,55 +34,24 @@ exports.piHandler = function(req, res) {
 
 exports.spheroHandler = function(req, res) {
 
-    _handle(req, res, _redirectBluetooth, function() {
-
-        console.log('Connection to sphero: ' + req.host + req.originalUrl);
-
-        var options = {
-                hostname: req.host,
-                port: bluetoothServerPort,
-                path: req.originalUrl,
-                method: 'GET'
-            },
-            data = '',
-            requestToSphero = http.request(options, function (responseFromSphero) {
-
-                responseFromSphero.setEncoding('utf8');
-
-                responseFromSphero.on('data', function (chunk) {
-                    data += chunk;
-                });
-
-                responseFromSphero.on('end', function () {
-
-                    res.status(responseFromSphero.statusCode).send(data);
-                });
-            });
-
-        requestToSphero.on('error', function (e) {
-            res.status(404).end();
-            console.log('problem with request: ' + e.message);
-        });
-
-        requestToSphero.end();
-    });
+    _handle(req, res, _redirectBluetooth);
 };
 
 exports.rccarHandler = function(req, res) {
 	_handle(req, res, _redirectBluetooth);
 };
 
-function _handle(req, res, next, callback) {
+function _handle(req, res, next) {
 	var id = req.params.id;
 	var team = deviceIds[id];
 	if ( !team ) {
 		res.json({message: 'no such id'});
 	} else {
-		next(req, res, callback);
+		next(req, res);
 	}
 }
 
-function _redirectBluetooth(req, res, callback) {
+function _redirectBluetooth(req, res) {
 	var id = req.params.id;
 	var team = deviceIds[id];
 	var host = bluetoothServers[team];
@@ -91,8 +60,35 @@ function _redirectBluetooth(req, res, callback) {
 	} else if ( callback ) {
         callback();
     } else {
-		var url = 'http://' + host + ':' + bluetoothServerPort + req.originalUrl;
-		res.redirect(url);
+        console.log('Connection to device: ' + req.host + req.originalUrl);
+
+        var options = {
+                hostname: req.host,
+                port: bluetoothServerPort,
+                path: req.originalUrl,
+                method: 'GET'
+            },
+            data = '',
+            requestTodevice = http.request(options, function (responseFromdevice) {
+
+                responseFromdevice.setEncoding('utf8');
+
+                responseFromdevice.on('data', function (chunk) {
+                    data += chunk;
+                });
+
+                responseFromdevice.on('end', function () {
+
+                    res.status(responseFromdevice.statusCode).send(data);
+                });
+            });
+
+        requestTodevice.on('error', function (e) {
+            res.status(404).end();
+            console.log('problem with request: ' + e.message);
+        });
+
+        requestTodevice.end();
 	}
 }
 
