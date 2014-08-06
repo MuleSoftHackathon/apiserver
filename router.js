@@ -19,6 +19,7 @@ exports.register = function(req, res) {
 		res.json({message: 'invalid key!'});
 	} else {
 		bluetoothServers[team] = host;
+		res.json({message: 'registered!'})
 	}
 }
 
@@ -39,7 +40,7 @@ function _handle(req, res, next) {
 	var id = req.params.id;
 	var team = deviceIds[id];
 	if (team == null) {
-		res.json({message: "no such id"});
+		res.json({message: 'no such id'});
 	} else {
 		next(req, res);
 	}
@@ -50,11 +51,11 @@ function _redirectBluetooth(req, res) {
 	var team = deviceIds[id];
 	var host = bluetoothServers[team];
 	if(host == null) {
-		res.json({message: "team server not registered!"});
+		res.json({message: 'team server not registered!'});
 	} else {
-		// redirect
+		var url = 'http://' + host + ':' + bluetoothServerPort + req.originalUrl;
+		res.redirect(url);
 	}
-
 }
 
 fs.readFile('key.config', 'utf8', function (err, data) {
