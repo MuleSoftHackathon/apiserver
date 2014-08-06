@@ -12,6 +12,8 @@ server = app.listen(8080,  function() {
 
 
 app.get('/', router.rootHandler);
-//app.get('/rccar/:id/:action', router.rccarHandler);
-//app.get('/pi/:id/:action', router.piHandler);
+app.get('/register', router.register);
+
+app.get('/rccar/:id/:action', router.rccarHandler);
+app.get('/pi/:id/:action', router.piHandler);
 app.get('/sphero/:id/:action', router.spheroHandler);
