@@ -13,7 +13,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', router.rootHandler);
-app.route('/register').post(router.register);
+app.route('/remoteDevice')
+.get(router.getDevice)
+.post(router.registerDevice)
+.delete(router.removeDevice);
 
 app.all('/rccar/:id/:action', router.rccarHandler);
 app.all('/pi/:id/:action', router.piHandler);

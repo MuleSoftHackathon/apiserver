@@ -1,5 +1,4 @@
 'use strict';
-
 var http = require('http');
 var fs   = require('fs');
 var pi   = require('./pi/pi');
@@ -9,36 +8,54 @@ exports.rootHandler = function(req, res) {
   res.end('Welcome to Hackathon!');
 };
 
-var bluetoothServerPort = 8352;
-var bluetoothServers = {};
-var deviceIPMappings = {};
+var remoteDevice = {};
 var BTServerKeys;
 var BTDeviceMap;
 
-exports.register = function(req, res) {
-	var id   = req.body.device_id;
-  var type = req.body.device_type;
-  var port = req.body.port;
-	var host = req.hostname;
+exports.getDevice = function(req, res) {
+  res.json(remoteDevice);
+};
 
-  if (type === 'pi') {
-    deviceIPMappings[id] = {
-      host: host,
-      port: port
-    };
-    res.json({message: 'registered!'});
-  } else if (type === 'bt') {
-    var team = BTServerKeys[id];
-    if (!team) {
-      res.status(400).json({message: 'invalid id!'});
+exports.registerDevice = function(req, res) {
+  var device = {
+    id: req.body.device_id,
+    type: req.body.device_type,
+    host: req.hostname,
+    port: req.body.port
+  };
+
+  if (remoteDevice.hasOwnProperty(device.id)) {
+    res.status(400).json({message: 'Duplicate device ID detected'});
+    return;
+  }
+
+  if (device.type === 'bt') {
+    if (BTServerKeys.hasOwnProperty(device.id)) {
+      device.id = BTServerKeys[device.id];
     } else {
-      bluetoothServers[team] = host;
-      res.json({message: 'registered!'});
+      res.status(400).json({message: 'Invalid id!'});
+    }
+  }
+
+  remoteDevice[device.id] = device;
+  res.json({message: 'registered!'});
+};
+
+exports.removeDevice = function(req, res) {
+  var device = remoteDevice[req.body.device_id];
+
+  if (device) {
+    if (device.host === req.hostname) {
+      delete remoteDevice[req.body.device_id];
+      res.json({message: 'Removed!'});
+    } else {
+      res.status(400).json({message: 'Host does not match'});
     }
   } else {
-    res.status(400).json({message: 'Unknown device type.'});
+    res.status(400).json({message: 'No such device'});
   }
 };
+
 
 exports.piHandler = function(req, res) {
   var id   = req.params.id;
@@ -67,9 +84,9 @@ function _handle(req, res, next) {
 function _redirectBluetooth(req, res) {
 	var id = req.params.id;
 	var team = BTDeviceMap[id];
-	var host = bluetoothServers[team];
+	var remote = remoteDevice[team];
 
-	if( !host ) {
+	if( !remote ) {
 		res.status(400).json({message: 'team server not registered!'});
 	} else if ( callback ) {
     callback();
@@ -78,7 +95,7 @@ function _redirectBluetooth(req, res) {
 
     var options = {
       hostname: req.host,
-      port: bluetoothServerPort,
+      port: remote.port,
       path: req.originalUrl,
       method: 'GET'
     },
