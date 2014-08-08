@@ -1,8 +1,7 @@
 'use strict';
-var http = require('http');
+var request = require('request');
 
 exports.handle = function (req, res, dest) {
-  var id = req.params.id;
   var action = req.params.action;
 
   if (dest === undefined) {
@@ -10,30 +9,25 @@ exports.handle = function (req, res, dest) {
   } else {
     var url = 'http://' + dest.host + ':' + dest.port + '/' + action;
 
-    var data = '';
     var options = {
-      hostname: dest.host,
-      port: dest.port,
-      path: '/' + action
+      url: url,
+      method: req.method,
+      headers: { host: dest.host + ':' + dest.port },
+      json: req.body
     };
 
-    var request = http.request(options, function(response) {
-      console.log('STATUS: ' + response.statusCode);
-      response.setEncoding('utf8');
-      response.on('data', function (chunk) {
-        data += chunk;
-      });
+    console.log('Forwarding Pi request to %s:%d', dest.host, dest.port);
+    console.log('%s %s', req.method, url);
 
-      response.on('end', function (chunk) {
-        res.json(JSON.parse(data));
-      });
-    });
-
-    request.on('error', function(e) {
-      console.log('Got error: ' + e.message);
-      res.status(500).json({message: e.message});
-    });
-
-    request.end();
+    request(options,
+      function (error, response, body) {
+        if (!error) {
+          res.status(response.statusCode).json(body);
+        } else {
+          console.log('Error occured %s', response.statusCode);
+          res.status(response.statusCode).json({message: 'Error occured'});
+        }
+      }
+    );
   }
 };

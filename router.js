@@ -20,7 +20,7 @@ exports.registerDevice = function(req, res) {
   var device = {
     id: req.body.device_id,
     type: req.body.device_type,
-    host: req.hostname,
+    host: req.ip,
     port: req.body.port
   };
 
@@ -59,7 +59,7 @@ exports.removeDevice = function(req, res) {
 
 exports.piHandler = function(req, res) {
   var id   = req.params.id;
-  var dest = deviceIPMappings[id];
+  var dest = remoteDevice[id];
 	pi.handle(req, res, dest);
 };
 
