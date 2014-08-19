@@ -59,6 +59,12 @@ This server should be hosted by Mulesoft, and give each team their access keys a
 2. Start the server 
 	node app
 
+Instructions on the Event
+=========================
+1. Prepare the key.confg, give each team their access key, and their assigned deviced ids
+2. Start the server, and give the host of the sever to the students
+3. Let each team run their own setup
+
 
 
 
