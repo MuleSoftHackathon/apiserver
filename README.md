@@ -14,9 +14,10 @@ http://host/{deviceName}/{deviceId}/{action}
 Devices
 -------
 The available device names are
-rccar
-sphero
-pi
+
+1. rccar
+2. sphero
+3. pi
 
 Please see RAML about the specification of the APIs.
 
@@ -25,6 +26,7 @@ Configuration
 key.config is the configuration for the device assignment and map
 Example
 ------
+```
 {
 	"BTServerKeys": {
 		"somecomplexaccesskey": "team1"
@@ -37,6 +39,7 @@ Example
 	    "someidforrccar2": "team2"
   }
 }
+```
 Set the access key for each team in BluetoothServerKeys
 Set the device Id and their assignment in BtDeviceMap
 
@@ -48,6 +51,7 @@ User Interactions
 Instructions
 ============
 This server should be hosted by Mulesoft, and give each team their access keys and device ids.
+
 0. Install node, and package
 	cd apiserver
 	npm install
