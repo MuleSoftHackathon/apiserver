@@ -1,7 +1,7 @@
 'use strict';
 var http = require('http');
 var fs   = require('fs');
-var pi   = require('./pi/pi');
+var pi   = require('./pi');
 
 exports.rootHandler = function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
