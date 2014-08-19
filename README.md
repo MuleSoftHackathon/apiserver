@@ -7,22 +7,54 @@ Central server for Rest API
 URL Scheme
 ==========
 
-http://mulesofturl/{deviceName}/{groupHash + ID}/{function}
+Url Pattern
+-----------
+http://host/{deviceName}/{deviceId}/{action}
 
-```
-GET http://mulesoft.com/pi/WY87X3/getRange
-```
+Devices
+-------
+The available device names are
+rccar
+sphero
+pi
 
-Configuration Files:
-====================
+Please see RAML about the specification of the APIs.
 
-All data you want to store on file about the teams or devices, use the specified config file
+Configuration
+=============
+key.config is the configuration for the device assignment and map
+Example
+------
+{
+	"BTServerKeys": {
+		"somecomplexaccesskey": "team1"
+		"anothercomplexaccesskey": "team2"
+	},
+	"BTDeviceMap":  {
+	    "someidforsphero1": "team1",
+	    "someidforsphero2": "team2"
+	    "someidforrccar1": "team1",
+	    "someidforrccar2": "team2"
+  }
+}
+Set the access key for each team in BluetoothServerKeys
+Set the device Id and their assignment in BtDeviceMap
 
-- spheroConfig.js
-- rccarConfig.js
-- piConfig.js
-
-User Interactions:
-===================
+User Interactions
+=================
 
 ![alt text](http://i.imgur.com/CpXXlxq.png "Logo Title Text 1")
+
+Instructions
+============
+This server should be hosted by Mulesoft, and give each team their access keys and device ids.
+0. Install node, and package
+	cd apiserver
+	npm install
+1. Config the key.config
+2. Start the server 
+	node app
+
+
+
+
