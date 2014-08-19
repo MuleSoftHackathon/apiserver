@@ -1,0 +1,169 @@
+#%RAML 0.8
+title: Hackthon
+version: 0.1
+
+baseUri: http://localhost:8352
+
+/rccar/{deviceId}:
+  /open:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: open port connection to the rccar
+  /close:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: close port connection to the rccar
+  /forward:
+    get:
+      queryParameters:
+        time:
+          description: the duration of the movement in milliseconds
+          required: false
+          type: integer,
+          default: 500
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: let the car go forward
+  /backward:
+   get:
+      queryParameters:
+        time:
+          description: the duration of the movement in milliseconds
+          required: false
+          type: integer,
+          default: 500
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: let the car go backward
+  /stop:
+    get:
+      description: let the car stop
+  /left:
+    get:
+      queryParameters:
+        time:
+          description: the duration of the movement in milliseconds
+          required: false
+          type: integer,
+          default: 500
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: let the car go left
+  /right:
+    get:
+      queryParameters:
+        time:
+          description: the duration of the movement in milliseconds
+          required: false
+          type: integer,
+          default: 500
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "message": { "type": "string" }
+                }
+      description: let the car go right
+  /power:
+    get:
+      queryParameters:
+        power:
+          description: the power output to the motors
+          required: false
+          type: integer
+          default: 191
+          minimum: 191
+          maximum: 255
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "power": { 
+                    "type": "number",
+                    "minimum": 191,
+                    "maxiimum": 255
+                  },
+                  "message": { "type": "string" }
+                }
+      description: set the power of car to 
+  /sensing:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "status": {
+                    "type": "string",
+                    "enum": [ "ok", "error" ]
+                  },
+                  "left": { "type": "number" },
+                  "right": { "type": "number" },
+                  "message": { "type": "string" }
+                }
+      description: get the sensing on the motors
