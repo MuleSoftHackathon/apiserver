@@ -32,6 +32,7 @@ exports.registerDevice = function(req, res) {
   if (device.type === 'bt') {
     if (BTServerKeys.hasOwnProperty(device.id)) {
       device.id = BTServerKeys[device.id];
+      console.log('---------- New Team: ' + device.id + ' registered ----------');
     } else {
       res.status(400).json({message: 'Invalid id!'});
       return;
