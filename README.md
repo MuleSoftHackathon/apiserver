@@ -1,15 +1,17 @@
 apiserver
 =========
 
-Central server for Rest API
-
+Central server which will be providing APIs for the remote control car, sphero,
+and raspberry pi at the MuleSoftHackathon event.
 
 URL Scheme
 ==========
 
 Url Pattern
 -----------
+```
 http://host/{deviceName}/{deviceId}/{action}
+```
 
 Devices
 -------
@@ -19,11 +21,13 @@ The available device names are
 2. sphero
 3. pi
 
-Please see RAML about the specification of the APIs.
+See files in the `/RAML` folder to learn more about the specification of the APIs.
 
 Configuration
 =============
+
 key.config is the configuration for the device assignment and map
+
 Example
 ------
 ```
@@ -52,19 +56,21 @@ Instructions
 ============
 This server should be hosted by Mulesoft, and give each team their access keys and device ids.
 
-0. Install node, and package
-	cd apiserver
-	npm install
-1. Config the key.config
-2. Start the server 
-	node app
+0. Install all the node dependencies
+```
+npm install
+```
+1. Edit the key.config if needed
+```
+vim key.config
+```
+2. Start the server
+```
+node app
+```
 
-Instructions on the Event
+Setting up api-server at the event
 =========================
 1. Prepare the key.confg, give each team their access key, and their assigned deviced ids
 2. Start the server, and give the host of the sever to the students
 3. Let each team run their own setup
-
-
-
-
