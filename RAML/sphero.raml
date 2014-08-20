@@ -1,0 +1,143 @@
+#%RAML 0.8
+title: Hackthon-Sphero
+version: 0.1
+
+baseUri: http://localhost:8352
+
+/shphero/{deviceId}:
+  /connect:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": { "type": "string" }
+                  }
+      description: connect to the sphero
+
+  /close:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": { "type": "string" }
+                  }
+      description: close connection
+
+  /rotate:
+    get:
+      queryParameters:
+        angle:
+          description: the rotating angle of the sphero
+          required: true
+          type: integer
+          minimum: -180
+          maximum: 179
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": { "type": "string" }
+                  }
+      description: rotate the sphero
+
+  /color:
+    get:
+      queryParameters:
+        r:
+          description: propotion of red color
+          required: true
+          type: integer
+          minimum: 0
+          maximum: 255
+        g:
+          description: propotion of green color
+          required: true
+          type: integer
+          minimum: 0
+          maximum: 255
+        b:
+          description: propotion of blue color
+          required: true
+          type: integer
+          minimum: 0
+          maximum: 255
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": { "type": "string" }
+                  }
+      description: set the LED color
+
+  /move:
+    get:
+      queryParameters:
+        speed:
+          description: rolling speed
+          required: true
+          type: integer
+          minimum: 0
+          maximum: 99
+        angle:
+          description: rolling direction
+          required: true
+          type: integer
+          minimum: 0
+          maximum: 355
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": { "type": "string" }
+                  }
+      description: make sphero rolling
+
+  /sensing:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+                schema: |
+                  {
+                    "status": {
+                      "type": "string",
+                      "enum": [ "ok", "error" ]
+                    },
+                    "message": {
+                      "type": ["array", "string"]
+                    }
+                  }
+      description: get the rotated angle of sphero
