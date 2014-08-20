@@ -34,6 +34,7 @@ exports.registerDevice = function(req, res) {
       device.id = BTServerKeys[device.id];
     } else {
       res.status(400).json({message: 'Invalid id!'});
+      return;
     }
   }
 
