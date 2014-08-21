@@ -56,21 +56,21 @@ Instructions
 ============
 This server should be hosted by Mulesoft, and give each team their access keys and device ids.
 
-0. Install all the node dependencies
-```
-npm install
-```
-1. Edit the key.config if needed
-```
-vim key.config
-```
-2. Start the server
-```
-node app
-```
+1. Install all the node dependencies
+	```
+	npm install
+	```
+2. Edit the key.config if needed
+	```
+	vim key.config
+	```
+3. Start the server
+	```
+	node app
+	```
 
 Setting up api-server at the event
 =========================
-1. Prepare the key.confg, give each team their access key, and their assigned deviced ids
+1. Prepare the key.confg, and give each team their access key and their assigned deviced ids
 2. Start the server, and give the host of the sever to the students
 3. Let each team run their own setup
