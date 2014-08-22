@@ -90,9 +90,7 @@ function _redirectBluetooth(req, res) {
 
 	if( !remote ) {
 		res.status(400).json({message: 'team server not registered!'});
-	} else if ( callback ) {
-    callback();
-  } else {
+	} else {
     console.log('Connection to device: ' + req.host + req.originalUrl);
 
     var options = {
