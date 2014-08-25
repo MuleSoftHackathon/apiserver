@@ -47,30 +47,18 @@ exports.removeDevice = function(req, res) {
   var device = remoteDevice[req.body.device_id];
 
   if (device) {
-    if (device.host === req.hostname) {
+    if (device.host === req.ip) {
       delete remoteDevice[req.body.device_id];
+      console.log('Device removed: ' + device.id);
       res.json({message: 'Removed!'});
     } else {
+      console.log('Remove device error: host does not match - ' + device.id);
       res.status(400).json({message: 'Host does not match'});
     }
   } else {
+    console.log('Remove device error: no such device - ' + req.body.device_id);
     res.status(400).json({message: 'No such device'});
   }
-};
-
-
-exports.piHandler = function(req, res) {
-  var id   = req.params.id;
-  var dest = remoteDevice[id];
-	pi.handle(req, res, dest);
-};
-
-exports.spheroHandler = function(req, res) {
-  _handle(req, res, _redirectBluetooth);
-};
-
-exports.rccarHandler = function(req, res) {
-	_handle(req, res, _redirectBluetooth);
 };
 
 function _handle(req, res, next) {
@@ -119,6 +107,21 @@ function _redirectBluetooth(req, res) {
     requestToDevice.end();
 	}
 }
+
+exports.piHandler = function(req, res) {
+  var id   = req.params.id;
+  var dest = remoteDevice[id];
+  pi.handle(req, res, dest);
+};
+
+exports.spheroHandler = function(req, res) {
+  _handle(req, res, _redirectBluetooth);
+};
+
+exports.rccarHandler = function(req, res) {
+  _handle(req, res, _redirectBluetooth);
+};
+
 
 fs.readFile('key.config', 'utf8', function (err, data) {
   if (err) {
