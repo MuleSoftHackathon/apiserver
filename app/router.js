@@ -32,13 +32,13 @@ exports.registerDevice = function(req, res) {
   if (device.type === 'bt') {
     if (BTServerKeys.hasOwnProperty(device.id)) {
       device.id = BTServerKeys[device.id];
-      console.log('---------- New Team: ' + device.id + ' registered ----------');
     } else {
       res.status(400).json({message: 'Invalid id!'});
       return;
     }
   }
 
+  console.log('---------- New device: ' + device.id + ' registered ----------');
   remoteDevice[device.id] = device;
   res.json({message: 'registered!'});
 };
@@ -91,10 +91,10 @@ function _redirectBluetooth(req, res) {
 	if( !remote ) {
 		res.status(400).json({message: 'team server not registered!'});
 	} else {
-    console.log('Connection to device: ' + req.host + req.originalUrl);
+    console.log('Connection to device: ' + remote.host + req.originalUrl);
 
     var options = {
-      hostname: req.host,
+      hostname: remote.host,
       port: remote.port,
       path: req.originalUrl,
       method: 'GET'
