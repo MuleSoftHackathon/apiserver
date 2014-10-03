@@ -28,18 +28,24 @@ exports.registerServer = function(req, res) {
 }
 
 exports.piHandler = function(req, res) {
-	var deviceServer = piServers[req.params.accessKey];
+	var team = accessKeys[req.params.accessKey];
+	var deviceServer = piServers[team];
 	pi.handle(req, res, deviceServer);
 };
 
 exports.spheroHandler = function(req, res) {
-	var deviceServer = bluetoothServers[req.params.accessKey];
-	bluetooth.handle(req, res);
+	var team = accessKeys[req.params.accessKey];
+	var deviceServer = bluetoothServers[team];
+	bluetooth.handle(req, res, deviceServer);
 };
 
 exports.rccarHandler = function(req, res) {
-	var deviceServer = bluetoothServers[req.params.accessKey];
-	bluetooth.handle(req, res);
+	var team = accessKeys[req.params.accessKey];
+	var deviceServer = bluetoothServers[team];
+	console.log(req.params);
+	console.log(deviceServer);
+	console.log(bluetoothServers);
+	bluetooth.handle(req, res, deviceServer);
 };
 
 /**
@@ -113,7 +119,7 @@ function showDeviceServer(req, res, type) {
 	}
 
 	res.json({
-		id : deviceServer.id,
+		team : team,
 		type : deviceServer.type,
 		host : deviceServer.host,
 		port : deviceServer.port

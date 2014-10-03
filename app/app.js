@@ -20,9 +20,9 @@ router.use(function(req, res, next) {
 });
 
 router.use('/deviceserver/', handlers.checkAccessKey);
-router.use('/pi/', handlers.checkAccessKey);
-router.use('/rccar/', handlers.checkAccessKey);
-router.use('/sphero/', handlers.checkAccessKey);
+router.use('/pi/:accessKey', handlers.checkAccessKey);
+router.use('/rccar/:accessKey', handlers.checkAccessKey);
+router.use('/sphero/:accessKey', handlers.checkAccessKey);
 
 router.route('/').get(handlers.rootHandler);
 router.route('/deviceserver/register')

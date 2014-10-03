@@ -1,9 +1,10 @@
 'use strict';
+var http = require('http');
 var request = require('request');
 
 exports.handle = function(req, res, remote) {
 	var id = req.params.id;
-
+	
 	if (!remote) {
 		res.status(400).json({
 			message : 'team server not registered!'
