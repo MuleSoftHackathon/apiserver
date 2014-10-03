@@ -1,5 +1,6 @@
 'use strict';
 var request = require('request');
+var querystring = require('querystring');
 
 exports.handle = function (req, res, dest) {
   var action = req.params.action;
@@ -8,7 +9,8 @@ exports.handle = function (req, res, dest) {
     res.status(400).json({message: 'Device not registered.'});
   } else {
     var url = 'http://' + dest.host + ':' + dest.port + '/' + action;
-
+    
+    url = url + '?' + querystring.stringify({ accessKey: req.params.accessKey });
     var options = {
       url: url,
       method: req.method,

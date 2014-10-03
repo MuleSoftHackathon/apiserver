@@ -85,7 +85,7 @@ function register(req, res) {
 		oldServer = bluetoothServers[team];
 		bluetoothServers[team] = deviceServer;
 	} else if (deviceServer.type === 'pi') {
-		olderServer = piServers[team];
+		oldServer = piServers[team];
 		piServers[team] = deviceServer;
 	}
 
