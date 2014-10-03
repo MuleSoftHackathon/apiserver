@@ -32,16 +32,20 @@ Example
 ------
 ```
 {
-	"accesskeys": {
-		"MuleSoft#Team#Hackathon@1": "team1",
-        "MuleSoft#Team#Hackathon@2": "team2",
-        "MuleSoft#Team#Hackathon@3": "team3",
-        "MuleSoft#Team#Hackathon@4": "team4",
-        "MuleSoft#Team#Hackathon@5": "team5",
-        "MuleSoft#Team#Hackathon@6": "team6",
-        "MuleSoft#Team#Hackathon@7": "team7",
+  "accessKeys": {
+    "MuleSoftHackathonTeam1": "team1",
+    "MuleSoftHackathonTeam2": "team2",
+    "MuleSoftHackathonTeam3": "team3",
+    "MuleSoftHackathonTeam4": "team4",
+    "MuleSoftHackathonTeam5": "team5",
+    "MuleSoftHackathonTeam6": "team6",
+    "MuleSoftHackathonTeam7": "team7",
+    "MuleSoftHackathonTeam8": "team8",
+    "MuleSoftHackathonTeam9": "team9",
+    "MuleSoftHackathonTeam10": "team10"
   }
 }
+
 ```
 Set the access key for each team
 
