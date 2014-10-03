@@ -32,20 +32,18 @@ Example
 ------
 ```
 {
-	"BTServerKeys": {
-		"somecomplexaccesskey": "team1"
-		"anothercomplexaccesskey": "team2"
-	},
-	"BTDeviceMap":  {
-	    "someidforsphero1": "team1",
-	    "someidforsphero2": "team2"
-	    "someidforrccar1": "team1",
-	    "someidforrccar2": "team2"
+	"accesskeys": {
+		"MuleSoft#Team#Hackathon@1": "team1",
+        "MuleSoft#Team#Hackathon@2": "team2",
+        "MuleSoft#Team#Hackathon@3": "team3",
+        "MuleSoft#Team#Hackathon@4": "team4",
+        "MuleSoft#Team#Hackathon@5": "team5",
+        "MuleSoft#Team#Hackathon@6": "team6",
+        "MuleSoft#Team#Hackathon@7": "team7",
   }
 }
 ```
-Set the access key for each team in BluetoothServerKeys
-Set the device Id and their assignment in BtDeviceMap
+Set the access key for each team
 
 User Interactions
 =================

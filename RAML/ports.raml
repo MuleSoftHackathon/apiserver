@@ -1,0 +1,41 @@
+#%RAML 0.8
+title: Hackthon
+
+baseUri: http://localhost:8352
+
+/ports:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: |
+              {
+              
+              }
+    description: open port connection to the rccar
+    
+/port:
+  post:
+    description: Register port for the web application
+      queryParameters:
+        address:
+          device: device type (rccar)
+          id: device Id
+          port: name of the port
+          description: A web hook address to be triggered when motion sensor detects motion
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                 {
+                 
+                 }
+        400:
+          body:
+            application/json:
+             example: |
+                 {
+                  
+                 }
