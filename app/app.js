@@ -1,8 +1,8 @@
 'use strict';
 var express    = require('express');
 var http       = require('http');
-var handlers   = require('./handlers');
 var bodyParser = require('body-parser');
+var handlers   = require('./handlers');
 
 var app    = express();
 var router = express.Router();
@@ -19,14 +19,21 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.route('/').get(handlers.rootHandler);
-router.route('/remoteDevice')
-.get(handlers.getDevice)
-.post(handlers.registerDevice)
-.delete(handlers.removeDevice);
+router.use('/deviceserver/', handlers.checkAccessKey);
+router.use('/pi/', handlers.checkAccessKey);
+router.use('/rccar/', handlers.checkAccessKey);
+router.use('/sphero/', handlers.checkAccessKey);
 
-router.route('/pi/:id/:action').all(handlers.piHandler);
-router.route('/rccar/:id/:action').all(handlers.rccarHandler);
-router.route('/sphero/:id/:action').all(handlers.spheroHandler);
+router.route('/').get(handlers.rootHandler);
+router.route('/deviceserver/register')
+  .post(handlers.registerServer);
+router.route('/deviceserver/pi')
+  .get(handlers.getPiServer);
+router.route('/deviceserver/bluetooth')
+  .get(handlers.getBluetoothServer);
+router.route('/pi/:accessKey/:action').all(handlers.piHandler);
+router.route('/rccar/:accessKey/:action').all(handlers.rccarHandler);
+router.route('/sphero/:accessKey/:action').all(handlers.spheroHandler);
+
 
 app.all('*', router);

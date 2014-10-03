@@ -1,133 +1,133 @@
 'use strict';
 var http = require('http');
-var fs   = require('fs');
-var pi   = require('./pi');
+var fs = require('fs');
+var pi = require('./devices/pi');
+var bluetooth = require('./devices/bluetooth');
+
+/**
+ * routing
+ */
 
 exports.rootHandler = function(req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Welcome to Hackathon!');
+	res.writeHead(200, {
+		'Content-Type' : 'text/plain'
+	});
+	res.end('Welcome to Hackathon! -- Central Api Server');
 };
 
-var remoteDevice = {};
-var BTServerKeys;
-var BTDeviceMap;
-
-exports.getDevice = function(req, res) {
-  res.json(remoteDevice);
-};
-
-exports.registerDevice = function(req, res) {
-  var device = {
-    id: req.body.device_id,
-    type: req.body.device_type,
-    host: req.ip,
-    port: req.body.port
-  };
-
-  if (remoteDevice.hasOwnProperty(device.id)) {
-    res.status(400).json({message: 'Duplicate device ID detected'});
-    return;
-  }
-
-  if (device.type === 'bt') {
-    if (BTServerKeys.hasOwnProperty(device.id)) {
-      device.id = BTServerKeys[device.id];
-    } else {
-      res.status(400).json({message: 'Invalid id!'});
-      return;
-    }
-  }
-
-  console.log('---------- New device: ' + device.id + ' registered ----------');
-  remoteDevice[device.id] = device;
-  res.json({message: 'registered!'});
-};
-
-exports.removeDevice = function(req, res) {
-  var device = remoteDevice[req.body.device_id];
-
-  if (device) {
-    if (device.host === req.ip) {
-      delete remoteDevice[req.body.device_id];
-      console.log('Device removed: ' + device.id);
-      res.json({message: 'Removed!'});
-    } else {
-      console.log('Remove device error: host does not match - ' + device.id);
-      res.status(400).json({message: 'Host does not match'});
-    }
-  } else {
-    console.log('Remove device error: no such device - ' + req.body.device_id);
-    res.status(400).json({message: 'No such device'});
-  }
-};
-
-function _handle(req, res, next) {
-	var id = req.params.id;
-	var team = BTDeviceMap[id];
-	if ( !team ) {
-		res.json({message: 'no such id'});
-	} else {
-		next(req, res);
-	}
+exports.getPiServer = function(req, res) {
+	showDeviceServer(req, res, 'pi');
 }
 
-function _redirectBluetooth(req, res) {
-	var id = req.params.id;
-	var team = BTDeviceMap[id];
-	var remote = remoteDevice[team];
+exports.getBluetoothServer = function(req, res) {
+	showDeviceServer(req, res, 'bluetooth');
+}
 
-	if( !remote ) {
-		res.status(400).json({message: 'team server not registered!'});
-	} else {
-    console.log('Connection to device: ' + remote.host + req.originalUrl);
-
-    var options = {
-      hostname: remote.host,
-      port: remote.port,
-      path: req.originalUrl,
-      method: 'GET'
-    },
-    data = '',
-    requestToDevice = http.request(options, function (responseFromDevice) {
-      responseFromDevice.setEncoding('utf8');
-      responseFromDevice.on('data', function (chunk) {
-        data += chunk;
-      });
-
-      responseFromDevice.on('end', function () {
-        res.status(responseFromDevice.statusCode).send(data);
-      });
-    });
-
-    requestToDevice.on('error', function (e) {
-      res.status(400).end();
-      console.log('problem with request: ' + e.message);
-    });
-
-    requestToDevice.end();
-	}
+exports.registerServer = function(req, res) {
+	register(req, res);
 }
 
 exports.piHandler = function(req, res) {
-  var id   = req.params.id;
-  var dest = remoteDevice[id];
-  pi.handle(req, res, dest);
+	var deviceServer = piServers[req.params.accessKey];
+	pi.handle(req, res, deviceServer);
 };
 
 exports.spheroHandler = function(req, res) {
-  _handle(req, res, _redirectBluetooth);
+	var deviceServer = bluetoothServers[req.params.accessKey];
+	bluetooth.handle(req, res);
 };
 
 exports.rccarHandler = function(req, res) {
-  _handle(req, res, _redirectBluetooth);
+	var deviceServer = bluetoothServers[req.params.accessKey];
+	bluetooth.handle(req, res);
 };
 
+/**
+ * Register Pi server or Bluetooth server
+ */
 
-fs.readFile('key.config', 'utf8', function (err, data) {
-  if (err) {
-    return console.log(err);
-  }
-  var obj = JSON.parse(data);
-  BTServerKeys = obj.BTServerKeys;
-  BTDeviceMap = obj.BTDeviceMap;
+var accessKeys = {};
+var piServers = {};
+var bluetoothServers = {};
+
+exports.checkAccessKey = function(req, res, next) {
+	var accessKey = req.params.accessKey || req.query.accessKey
+			|| req.body.accessKey;
+	var team = accessKeys[accessKey];
+	if (team == null) {
+		res.status(400).json({
+			message : 'Invalid access key ' + accessKey
+		});
+		console.log('invalid access key {' + accessKey + '}!');
+		return;
+	}
+	console.log('valid access key! -- team ' + team);
+	next();
+}
+
+function register(req, res) {
+	var deviceServer = {
+		type : req.body.type,
+		accessKey : req.body.accessKey,
+		host : req.body.ip || req.ip,
+		port : req.body.port
+	};
+
+	var team = accessKeys[deviceServer.accessKey];
+	var oldServer = null;
+	if (deviceServer.type === 'bluetooth') {
+		oldServer = bluetoothServers[team];
+		bluetoothServers[team] = deviceServer;
+	} else if (deviceServer.type === 'pi') {
+		olderServer = piServers[team];
+		piServers[team] = deviceServer;
+	}
+
+	var retMessage = oldServer == null ? 'Registered' : 'Updated';
+	console.log('---------- ' + deviceServer.type + ' server: '
+			+ deviceServer.id + ' ' + retMessage + ' ----------');
+	console.log('old Server %j', oldServer);
+	console.log('new Server %j', deviceServer);
+	var resMessage = deviceServer.type + ' Device server registered at '
+			+ deviceServer.ip + ':' + deviceServer.port + '!';
+	res.json({
+		message : resMessage
+	});
+}
+
+function showDeviceServer(req, res, type) {
+	var accessKey = req.query.accessKey;
+	var team = accessKeys[accessKey];
+	var deviceServer;
+
+	if (type == 'bluetooth') {
+		deviceServer = bluetoothServers[team];
+	} else if (type == 'pi') {
+		deviceServer = piServers[team];
+	}
+	if (deviceServer == null) {
+		res.json({
+			message : 'no device server registered'
+		})
+		return;
+	}
+
+	res.json({
+		id : deviceServer.id,
+		type : deviceServer.type,
+		host : deviceServer.host,
+		port : deviceServer.port
+	});
+}
+
+/**
+ * Read access keys on start up
+ */
+
+fs.readFile('key.config', 'utf8', function(err, data) {
+	if (err) {
+		return console.log(err);
+	}
+	var obj = JSON.parse(data);
+	accessKeys = obj.accessKeys;
 });
