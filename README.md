@@ -68,8 +68,37 @@ This server should be hosted by Mulesoft, and give each team their access keys a
 	```
 3. Start the server
 	```
+	cd app
 	node app
 	```
+Others
+======
+BluetoothServer and PiServer should be started after apiserver is started, otherwise, BluetoothServer and PiServer will run locally.
+
+If BluetoothServer or PiServer is not registered to central apiserver (or you want to register them to another machine), there are REST apis to do that.
+
+1. List the current server, for example
+	```
+	GET
+		/deviceserver/pi?accessKey=MuleSoftHackathonTeam1
+		/deviceserver/bluetooth?accessKey=MuleSoftHackathonTeam1
+	```
+2. Register a new server, for example
+	```
+	POST
+		/deviceserver/register
+	```
+	in the request body, pass a json like the following
+	```
+	{
+		"accessKey" : "xxxxxx",
+		"type" : "pi or bluetooth",
+		"host" : "new host for the server",
+		"port" : "new port for the server"
+	}
+	```
+
+If you want to do a POST request by browser, you can use a plug-in such as postman, post client, etc.
 
 Setting up api-server at the event
 =========================
